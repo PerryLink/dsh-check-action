@@ -1,0 +1,24 @@
+name: selftest
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run the checker on the fixture
+        env:
+          DSH_CHECKER_REF: aa0a25c
+        run: node src/check.mjs tests/fixture | tee /tmp/out.md
+      - name: Assert the report shape
+        run: |
+          grep -q "DSH plugin check" /tmp/out.md
+          grep -q "FLOW: \*\*未跑\*\*" /tmp/out.md
+          grep -q "DSC-11" /tmp/out.md
+          ! grep -q "DSC-01 清单/入口不完整" /tmp/out.md
