@@ -31,7 +31,7 @@ runs:
       shell: bash
       env:
         DSH_CHECK_FAIL_ON: ${{ inputs.fail-on }}
-        DSH_CHECKER_REF: aa0a25c
+        DSH_CHECKER_REF: bf548ac
       run: |
         node "${{ github.action_path }}/src/check.mjs" "${{ inputs.path }}" > "$RUNNER_TEMP/dsh-check.md"
         {
