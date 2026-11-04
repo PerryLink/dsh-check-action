@@ -1,0 +1,4 @@
+Apache License 2.0 — see https://github.com/PerryLink/dsh-standards/blob/main/LICENSE
+
+This action embeds no third-party code. The checker it invokes is fetched at
+run time from PerryLink/dsh-standards (Apache-2.0).

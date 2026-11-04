@@ -1,0 +1,171 @@
+{
+  "_comment": "规则 -> 建议 的静态映射。渲染器只做字符串替换，不调用任何模型。when: submit=提交前就该有, publish=发布后才可能有。",
+  "DSC-01": {
+    "title": "清单/入口不完整",
+    "why": "宿主靠 package.json 的 name/version/exports 找到入口；缺一项就装不上或加载失败。",
+    "fix": [
+      "补齐 name、version、license 三个必填字段",
+      "声明 exports[\".\"]，指向真实存在的构建产物或源码入口",
+      "如果是 bundle，同时声明 dsh.bundle.patch 指向 patch 文件"
+    ],
+    "anchor": "docs/entry.md#author-checklist",
+    "when": "submit"
+  },
+  "DSC-02": {
+    "title": "没有声明运行版本约束",
+    "why": "宿主需要知道这个插件适配哪个 DSH 版本；不声明就只能按未知处理。",
+    "fix": [
+      "在 package.json 加 engines.dsh（推荐）",
+      "没有 engines 时，用 peerDependencies[\"@deepseek-ai/dsh\"] 兜底",
+      "两者都有时以 engines 为准，peer 与 engines 冲突会被忽略"
+    ],
+    "example": "\"engines\": { \"dsh\": \">=0.2.0 <0.3.0\" }",
+    "anchor": "docs/entry.md#author-checklist",
+    "when": "submit"
+  },
+  "DSC-03": {
+    "title": "缺少可安装的版本固定信息",
+    "why": "市场和用户要能确定装的是哪个版本；只给仓库地址或浮动版本会装出不可复现的结果。",
+    "fix": [
+      "提供 npm 包名 + 具体版本，或仓库 + commit",
+      "在市场条目里写明安装方式"
+    ],
+    "anchor": "docs/entry.md#author-checklist",
+    "when": "publish"
+  },
+  "DSC-10": {
+    "title": "import 阶段有副作用",
+    "why": "import 时就发网络请求、写文件、起定时器，会让宿主在加载阶段出现难以排查的行为。这条只提示，不判失败。",
+    "fix": [
+      "把副作用移到插件 apply/启动之后",
+      "确实需要保留的，在 README 里写清楚"
+    ],
+    "anchor": "docs/entry.md#what-entry-does-not-do",
+    "when": "submit"
+  },
+  "DSC-11": {
+    "title": "未声明 dsh.capabilities",
+    "why": "宿主和市场靠这个字段判断插件会碰哪些资源；不声明就只能按最保守方式处理，也没法按权限筛选。",
+    "fix": [
+      "在 package.json 的 dsh 字段里加 capabilities 字符串数组",
+      "只写代码里实际用到的能力，例如用了 ctx.fs 就写 fs:read"
+    ],
+    "example": "\"dsh\": { \"capabilities\": [\"fs:read\", \"network:egress\"] }",
+    "values": "fs:read, fs:write, shell, subprocess, network:egress, network:ingress, credentials:read, credentials:list, credentials:provider, llm:adapter, sessions:read, system-prompt:write, tools:register, remote:expose, plugin:install",
+    "anchor": "docs/entry.md#author-checklist",
+    "when": "submit"
+  },
+  "DSC-12": {
+    "title": "凭据/披露声明不完整",
+    "why": "涉及凭据的插件要说清楚数据存在哪、有没有额外披露；缺了用户无法判断风险。",
+    "fix": [
+      "凭据只从宿主提供的接口拿，不要自己读写凭据文件",
+      "声明 dsh.commitments / dsh.disclosure 时按文档的结构写，链接用 https"
+    ],
+    "anchor": "docs/entry.md#author-checklist",
+    "when": "submit"
+  },
+  "DSC-13": {
+    "title": "未声明 dsh.labels 或用了禁用标签",
+    "why": "labels 用来标记高风险行为（改提示词、红队、远程访问、镜像等）；另外 official/verified/certified 这类词不允许自封。",
+    "fix": [
+      "按实际行为声明 dsh.labels 字符串数组",
+      "不要使用 official / verified / certified / secure / audited 作为标签或徽章"
+    ],
+    "example": "\"dsh\": { \"labels\": [\"prompt-modification\"] }",
+    "values": "prompt-modification, red-team, third-party-model-provider, remote-access, mirror",
+    "anchor": "docs/entry.md#author-checklist",
+    "when": "submit"
+  },
+  "FLOW": {
+    "title": "未跑，不给结论",
+    "why": "安装、配置、升级、卸载这些只有真的跑过才算数；静态检查不能替代。",
+    "fix": [
+      "作者侧：本地用临时环境跑一遍 dsh plugin add / remove，记录命令和结果",
+      "评审侧：只对通过 ENTRY 的条目按周做隔离安装，标注 J1 pass/fail/not-run"
+    ],
+    "anchor": "docs/flow.md#the-eight-journeys",
+    "when": "publish"
+  },
+  "BOOST": {
+    "title": "只给建议，不给判定",
+    "why": "BOOST 是实践库，不是等级；没有证据卡就不该有结论。",
+    "fix": [
+      "参考 LEV-1..8 里与本插件相关的 1-2 条",
+      "要声称效果，需要证据卡（环境、方法、命令、结果、对照）"
+    ],
+    "anchor": "docs/boost.md#the-eight-practices",
+    "when": "publish"
+  },
+  "DSC-04": {
+    "title": "装载后没有进入 ACTIVE",
+    "why": "宿主加载了模块，但插件没有真正激活；通常是 apply 抛错、依赖缺失或 provide/inject 不匹配。",
+    "fix": [
+      "在宿主里真实启动一次，看 stderr 里有没有 failed to import / did not activate",
+      "检查 apply 里的异步错误有没有被吞掉",
+      "确认 inject 的依赖在目标 profile 里存在"
+    ],
+    "anchor": "docs/flow.md#the-eight-journeys",
+    "when": "publish"
+  },
+  "DSC-05": {
+    "title": "声明的 provide 没有真正注册",
+    "why": "声明了会提供的服务，但运行时没有注册成功，别的插件会拿不到。",
+    "fix": [
+      "对照 apply 里的 ctx.set/register 调用",
+      "确认注册发生在正确的作用域，而不是被条件分支跳过"
+    ],
+    "anchor": "docs/flow.md#the-eight-journeys",
+    "when": "publish"
+  },
+  "DSC-06": {
+    "title": "动了 Cordis 私有注册面或 effect 拓扑不对",
+    "why": "直接操作内部注册结构会让卸载和重启失控。",
+    "fix": [
+      "只用公开的 ctx API",
+      "effect 挂在正确的 scope 上，由框架负责回收"
+    ],
+    "anchor": "docs/boost.md#the-eight-practices",
+    "when": "publish"
+  },
+  "DSC-07": {
+    "title": "卸载后没有归零",
+    "why": "插件卸载后 effect/store/registry 仍有残留，会让宿主越跑越慢。",
+    "fix": [
+      "把监听、定时器、连接都绑定到 disposer",
+      "卸载后复查计数是否回到 0"
+    ],
+    "anchor": "docs/flow.md#the-eight-journeys",
+    "when": "publish"
+  },
+  "DSC-08": {
+    "title": "重启不幂等",
+    "why": "重启或冷重装后状态不一致，通常是有全局单例或重复注册。",
+    "fix": [
+      "不要在模块顶层保存状态",
+      "重启时确认没有重复注册"
+    ],
+    "anchor": "docs/flow.md#the-eight-journeys",
+    "when": "publish"
+  },
+  "DSC-09": {
+    "title": "声明和实测不一致",
+    "why": "package.json 里声明提供/依赖的东西，和运行时实际行为对不上。",
+    "fix": [
+      "把 provide/inject 声明改成和代码一致",
+      "删掉没有实际注册的声明"
+    ],
+    "anchor": "docs/flow.md#the-eight-journeys",
+    "when": "publish"
+  },
+  "DSC-14": {
+    "title": "没有运行证据",
+    "why": "这一项只能用真实宿主启动来证明，静态检查替代不了。",
+    "fix": [
+      "在临时 DSH_HOME 里用真实宿主启动一次并保留日志",
+      "记录宿主版本，跨版本不可比"
+    ],
+    "anchor": "docs/entry.md#the-two-claims",
+    "when": "publish"
+  }
+}
