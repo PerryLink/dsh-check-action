@@ -11,14 +11,29 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
+      - name: Syntax-check the script
+        run: node --check src/check.mjs
       - name: Run the checker on the fixture
         env:
-          DSH_CHECKER_REF: aa0a25c
-        run: node src/check.mjs tests/fixture | tee /tmp/out.md
+          DSH_CHECKER_REF: 074349b1216a2c99fc49e6c4b6d7fc6a412367c1
+        run: |
+          set -o pipefail
+          node src/check.mjs tests/fixture | tee /tmp/out.md
       - name: Assert the report shape
         run: |
           grep -q "DSH plugin check" /tmp/out.md
           grep -q "FLOW: \*\*未跑\*\*" /tmp/out.md
           grep -q "DSC-11" /tmp/out.md
           ! grep -q "DSC-01 清单/入口不完整" /tmp/out.md
+      - name: Assert the advice is rendered
+        run: |
+          grep -q "修复：" /tmp/out.md
+          grep -q "https://github.com/PerryLink/dsh-plugin-guide/blob/" /tmp/out.md
+      - name: Fall back to the local rule card without advice
+        run: |
+          # v1.1.2 / bf548ac: the last release before the additive advice[].
+          curl -sSL --retry 3 https://codeload.github.com/PerryLink/dsh-standards/tar.gz/bf548acbc5909e503b9a29b89d665fb538c1d146 | tar xz -C "$RUNNER_TEMP"
+          DSH_CHECKER_DIR="$RUNNER_TEMP/dsh-standards-bf548acbc5909e503b9a29b89d665fb538c1d146" node src/check.mjs tests/fixture > /tmp/fallback.md
+          grep -q "DSC-11 未声明 dsh.capabilities" /tmp/fallback.md
+          ! grep -q "修复：" /tmp/fallback.md
