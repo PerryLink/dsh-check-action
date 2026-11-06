@@ -1,5 +1,5 @@
 name: DSH plugin check
-description: Read-only ENTRY checks for a DSH plugin, with template-based suggestions (no model calls).
+description: Read-only ENTRY checks for a DSH plugin, with rule-based suggestions (no model calls).
 author: PerryLink
 branding:
   icon: check-circle
@@ -26,20 +26,27 @@ runs:
   steps:
     - uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '24'
     - id: check
       shell: bash
       env:
         DSH_CHECK_FAIL_ON: ${{ inputs.fail-on }}
-        DSH_CHECKER_REF: bf548ac
+        # dsh-standards v1.2.0, pinned to the full commit.
+        DSH_CHECKER_REF: 074349b1216a2c99fc49e6c4b6d7fc6a412367c1
       run: |
-        node "${{ github.action_path }}/src/check.mjs" "${{ inputs.path }}" > "$RUNNER_TEMP/dsh-check.md"
+        status=0
+        node "${{ github.action_path }}/src/check.mjs" "${{ inputs.path }}" > "$RUNNER_TEMP/dsh-check.md" || status=$?
+        if [ -n "$GITHUB_STEP_SUMMARY" ]; then
+          cat "$RUNNER_TEMP/dsh-check.md" >> "$GITHUB_STEP_SUMMARY"
+        fi
         {
           echo "markdown<<DSH_EOF"
           cat "$RUNNER_TEMP/dsh-check.md"
           echo "DSH_EOF"
         } >> "$GITHUB_OUTPUT"
-    - if: inputs.comment == 'true' && github.event_name == 'pull_request'
+        exit "$status"
+    # Fork pull requests get a read-only token, so they only get the job summary.
+    - if: inputs.comment == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false
       uses: actions/github-script@v7
       with:
         script: |
