@@ -31,8 +31,8 @@ runs:
       shell: bash
       env:
         DSH_CHECK_FAIL_ON: ${{ inputs.fail-on }}
-        # dsh-standards v1.4.1, pinned to the full commit.
-        DSH_CHECKER_REF: 31900e1e1bd2c33765bb4aad3899b2be45b07c45
+        # dsh-standards v1.5.0, pinned to the full commit.
+        DSH_CHECKER_REF: 5f1a7a9892c884353e35d90ba07551581a72035c
       run: |
         status=0
         node "${{ github.action_path }}/src/check.mjs" "${{ inputs.path }}" > "$RUNNER_TEMP/dsh-check.md" || status=$?
