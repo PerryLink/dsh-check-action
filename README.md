@@ -23,9 +23,13 @@ jobs:
 
 ## What it does
 
-1. Runs the DSH checker (`dsh-standards`, pinned to a commit) in static mode.
-2. Maps each finding to a short rule card: why it matters, how to fix it, a guide anchor.
-3. Posts or updates one sticky comment per pull request.
+1. Runs the DSH checker (`dsh-standards`, pinned to a commit) in static ENTRY mode.
+2. Reads its additive `advice[]` (dsh-standards 1.2.0+): one fix and one guide URL
+   per finding. If the checker has no `advice` (an older pin), it falls back to
+   the built-in `rules/entry.json` cards — no error, same advisory output.
+3. Writes the report to the job summary, and posts or updates one sticky comment
+   per pull request. Fork pull requests get the summary only, because the token
+   there is read-only.
 
 ## What it does not do
 
@@ -37,5 +41,6 @@ jobs:
 ## Pinning
 
 The checker is fetched from `PerryLink/dsh-standards` at a pinned commit
-(`DSH_CHECKER_REF` in `action.yml`), so results are reproducible and do not
-depend on npm's latest tag.
+(`DSH_CHECKER_REF` in `action.yml`): **v1.2.0 /
+`074349b1216a2c99fc49e6c4b6d7fc6a412367c1`**. The full commit is used so a
+moved tag cannot change the result, and the action runs on **Node 24**.
