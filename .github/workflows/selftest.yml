@@ -19,16 +19,16 @@ jobs:
           done
       - name: Assert the pinned checker and the action surface
         run: |
-          grep -q "0fb3c5fde8509b9641d961cb2d0fe04c2e0f6fec" action.yml
-          grep -q "0fb3c5fde8509b9641d961cb2d0fe04c2e0f6fec" src/check.mjs
-          grep -q "0fb3c5fde8509b9641d961cb2d0fe04c2e0f6fec" README.md
-          grep -q "dsh-standards@1.6.6" src/check.mjs
+          grep -q "6c3d5253f2d624c980383622fc2aa7c5e55dbeae" action.yml
+          grep -q "6c3d5253f2d624c980383622fc2aa7c5e55dbeae" src/check.mjs
+          grep -q "6c3d5253f2d624c980383622fc2aa7c5e55dbeae" README.md
+          grep -q "dsh-standards@1.6.8" src/check.mjs
           grep -q "host-version:" action.yml
           grep -q "advice:" action.yml
           grep -q "DSH_CHECK_ADVICE_OUT" action.yml
       - name: Run the checker on the fixture
         env:
-          DSH_CHECKER_REF: 0fb3c5fde8509b9641d961cb2d0fe04c2e0f6fec
+          DSH_CHECKER_REF: 6c3d5253f2d624c980383622fc2aa7c5e55dbeae
         run: |
           set -o pipefail
           node src/check.mjs tests/fixture | tee /tmp/out.md
