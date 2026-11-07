@@ -17,7 +17,7 @@ const failOn = process.env.DSH_CHECK_FAIL_ON || 'none'
 
 // dsh-standards v1.2.0. The full commit is used so a moved tag can never change
 // what the action runs; keep it in sync with DSH_CHECKER_REF in action.yml.
-const REF = process.env.DSH_CHECKER_REF || '08af7e639847230685808b7828e4a700e8996daf'
+const REF = process.env.DSH_CHECKER_REF || '0fb3c5fde8509b9641d961cb2d0fe04c2e0f6fec'
 const CHECKER_PATH = ['40-checker', 'bin', 'dsh-plugin-verify.mjs']
 
 // The checker is fetched from codeload, so the action does not depend on an npm
@@ -36,7 +36,7 @@ const script = checkerScript()
 const args = [target, '--scope', 'entry', '--entry-claim', 'static', '--format', 'json']
 const run = script
   ? spawnSync(process.execPath, [script, ...args], { encoding: 'utf8', timeout: 180000, maxBuffer: 16 * 1024 * 1024 })
-  : spawnSync('npx', ['-y', '-p', 'dsh-standards@1.6.5', 'dsh-standards', ...args], { encoding: 'utf8', timeout: 180000, maxBuffer: 16 * 1024 * 1024 })
+  : spawnSync('npx', ['-y', '-p', 'dsh-standards@1.6.6', 'dsh-standards', ...args], { encoding: 'utf8', timeout: 180000, maxBuffer: 16 * 1024 * 1024 })
 let audit = null
 try { audit = JSON.parse(run.stdout) } catch { /* handled below */ }
 if (!audit || !Array.isArray(audit.checks)) {
