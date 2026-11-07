@@ -15,9 +15,9 @@ const rules = JSON.parse(fs.readFileSync(path.join(here, '..', 'rules', 'entry.j
 const target = process.argv[2] || '.'
 const failOn = process.env.DSH_CHECK_FAIL_ON || 'none'
 
-// dsh-standards v1.6.6. The full commit is used so a moved tag can never change
+// dsh-standards v1.6.7. The full commit is used so a moved tag can never change
 // what the action runs; keep it in sync with DSH_CHECKER_REF in action.yml.
-const REF = process.env.DSH_CHECKER_REF || '0fb3c5fde8509b9641d961cb2d0fe04c2e0f6fec'
+const REF = process.env.DSH_CHECKER_REF || 'da6eeac72318fceca264abee9b1b818b02643953'
 const CHECKER_PATH = ['40-checker', 'bin', 'dsh-plugin-verify.mjs']
 
 // The checker is fetched from codeload, so the action does not depend on an npm
@@ -35,7 +35,7 @@ function checkerScript() {
 const script = checkerScript()
 const hostVersion = (process.env.DSH_CHECK_HOST_VERSION || '').trim()
 
-// `host-version` is optional. The raw checker in the 1.6.6 pin has no
+// `host-version` is optional. The raw checker in the 1.6.7 pin has no
 // --host-version flag: its anchor flag is --runtime-version, and the
 // author-facing `dsh-standards check` CLI maps --host-version onto exactly that.
 // Probe `--help` instead of passing a flag blindly: an unknown option makes the
@@ -45,7 +45,7 @@ const hostVersion = (process.env.DSH_CHECK_HOST_VERSION || '').trim()
 function hostVersionArgs(scriptPath) {
   if (!hostVersion) return []
   if (!scriptPath) {
-    // The npx fallback pins the same raw 1.6.6 checker, whose anchor flag is
+    // The npx fallback pins the same raw 1.6.7 checker, whose anchor flag is
     // --runtime-version; it has no --host-version.
     return ['--runtime-version', hostVersion]
   }
@@ -60,7 +60,7 @@ function hostVersionArgs(scriptPath) {
 const args = [target, '--scope', 'entry', '--entry-claim', 'static', '--format', 'json', ...hostVersionArgs(script)]
 const run = script
   ? spawnSync(process.execPath, [script, ...args], { encoding: 'utf8', timeout: 180000, maxBuffer: 16 * 1024 * 1024 })
-  : spawnSync('npx', ['-y', '-p', 'dsh-standards@1.6.6', 'dsh-standards', ...args], { encoding: 'utf8', timeout: 180000, maxBuffer: 16 * 1024 * 1024 })
+  : spawnSync('npx', ['-y', '-p', 'dsh-standards@1.6.7', 'dsh-standards', ...args], { encoding: 'utf8', timeout: 180000, maxBuffer: 16 * 1024 * 1024 })
 let audit = null
 try { audit = JSON.parse(run.stdout) } catch { /* handled below */ }
 
