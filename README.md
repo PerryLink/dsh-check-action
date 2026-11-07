@@ -26,7 +26,7 @@ jobs:
 ## What it does
 
 1. Runs the DSH checker (`dsh-standards`, pinned to a commit) in static ENTRY mode.
-2. Reads its additive `advice[]` (dsh-standards 1.2.0+): one fix and one guide URL
+2. Reads its additive `advice[]` (the 1.2 release and later): one fix and one guide URL
    per finding. If the checker has no `advice` (an older pin), it falls back to
    the built-in `rules/entry.json` cards — no error, same advisory output.
 3. Writes the report to the job summary and exposes it as the `markdown` output.
@@ -49,10 +49,7 @@ jobs:
 
 Optional. It sets the dsh version used for the C-2 (`engines.dsh`) anchor.
 
-The raw checker in the pinned 1.6.8 build has no `--host-version` flag: its
-anchor flag is `--runtime-version`, and the author-facing
-`dsh-standards check` CLI maps `--host-version` onto exactly that. This action
-probes the pinned checker's `--help`: a future pin that adds `--host-version` is
+The pinned 1.6.8 checker has `--host-version`. The action probes the checker's `--help` and passes `--host-version` when present, so an older pin still works. This action
 forwarded verbatim, otherwise the value is forwarded as `--runtime-version`.
 If the checker accepts neither flag the input is ignored, a note is printed to
 the action log, and the checker's own host probe (or fallback anchor) applies.
