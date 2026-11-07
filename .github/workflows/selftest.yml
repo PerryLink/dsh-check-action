@@ -12,11 +12,23 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Syntax-check the script
-        run: node --check src/check.mjs
+      - name: Syntax-check every script
+        run: |
+          for file in $(git ls-files '*.mjs' '*.js'); do
+            node --check "$file"
+          done
+      - name: Assert the pinned checker and the action surface
+        run: |
+          grep -q "0fb3c5fde8509b9641d961cb2d0fe04c2e0f6fec" action.yml
+          grep -q "0fb3c5fde8509b9641d961cb2d0fe04c2e0f6fec" src/check.mjs
+          grep -q "0fb3c5fde8509b9641d961cb2d0fe04c2e0f6fec" README.md
+          grep -q "dsh-standards@1.6.6" src/check.mjs
+          grep -q "host-version:" action.yml
+          grep -q "advice:" action.yml
+          grep -q "DSH_CHECK_ADVICE_OUT" action.yml
       - name: Run the checker on the fixture
         env:
-          DSH_CHECKER_REF: 074349b1216a2c99fc49e6c4b6d7fc6a412367c1
+          DSH_CHECKER_REF: 0fb3c5fde8509b9641d961cb2d0fe04c2e0f6fec
         run: |
           set -o pipefail
           node src/check.mjs tests/fixture | tee /tmp/out.md
@@ -30,6 +42,19 @@ jobs:
         run: |
           grep -q "修复：" /tmp/out.md
           grep -q "https://github.com/PerryLink/dsh-plugin-guide/blob/" /tmp/out.md
+      - name: Assert the advice JSON output
+        env:
+          DSH_CHECK_ADVICE_OUT: /tmp/advice.json
+        run: |
+          node src/check.mjs tests/fixture > /tmp/advice.md
+          node -e "const a = JSON.parse(require('fs').readFileSync('/tmp/advice.json', 'utf8')); if (!Array.isArray(a) || a.length === 0) throw new Error('advice output is empty'); for (const x of a) if (!x.source || !x.fix || !x.docsUrl) throw new Error('advice entry is missing source/fix/docsUrl'); console.log('advice entries:', a.length)"
+          grep -q "修复：" /tmp/advice.md
+      - name: Forward host-version to the checker anchor
+        env:
+          DSH_CHECK_HOST_VERSION: 9.9.9
+        run: |
+          node src/check.mjs tests/fixture > /tmp/host-version.md
+          grep -q "9.9.9" /tmp/host-version.md
       - name: Fall back to the local rule card without advice
         run: |
           # v1.1.2 / bf548ac: the last release before the additive advice[].

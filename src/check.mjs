@@ -15,7 +15,7 @@ const rules = JSON.parse(fs.readFileSync(path.join(here, '..', 'rules', 'entry.j
 const target = process.argv[2] || '.'
 const failOn = process.env.DSH_CHECK_FAIL_ON || 'none'
 
-// dsh-standards v1.2.0. The full commit is used so a moved tag can never change
+// dsh-standards v1.6.6. The full commit is used so a moved tag can never change
 // what the action runs; keep it in sync with DSH_CHECKER_REF in action.yml.
 const REF = process.env.DSH_CHECKER_REF || '0fb3c5fde8509b9641d961cb2d0fe04c2e0f6fec'
 const CHECKER_PATH = ['40-checker', 'bin', 'dsh-plugin-verify.mjs']
@@ -33,15 +33,54 @@ function checkerScript() {
 }
 
 const script = checkerScript()
-const args = [target, '--scope', 'entry', '--entry-claim', 'static', '--format', 'json']
+const hostVersion = (process.env.DSH_CHECK_HOST_VERSION || '').trim()
+
+// `host-version` is optional. The raw checker in the 1.6.6 pin has no
+// --host-version flag: its anchor flag is --runtime-version, and the
+// author-facing `dsh-standards check` CLI maps --host-version onto exactly that.
+// Probe `--help` instead of passing a flag blindly: an unknown option makes the
+// checker exit 3 without a JSON report. A future pin that adds --host-version is
+// forwarded verbatim; today's pin still gets the same anchor via
+// --runtime-version.
+function hostVersionArgs(scriptPath) {
+  if (!hostVersion) return []
+  if (!scriptPath) {
+    // The npx fallback pins the same raw 1.6.6 checker, whose anchor flag is
+    // --runtime-version; it has no --host-version.
+    return ['--runtime-version', hostVersion]
+  }
+  const help = spawnSync(process.execPath, [scriptPath, '--help'], { encoding: 'utf8', timeout: 60000 })
+  const usage = `${help.stdout || ''}\n${help.stderr || ''}`
+  if (usage.includes('--host-version')) return ['--host-version', hostVersion]
+  if (usage.includes('--runtime-version')) return ['--runtime-version', hostVersion]
+  console.error(`dsh-check: checker accepts neither --host-version nor --runtime-version; ignoring host-version=${hostVersion}`)
+  return []
+}
+
+const args = [target, '--scope', 'entry', '--entry-claim', 'static', '--format', 'json', ...hostVersionArgs(script)]
 const run = script
   ? spawnSync(process.execPath, [script, ...args], { encoding: 'utf8', timeout: 180000, maxBuffer: 16 * 1024 * 1024 })
   : spawnSync('npx', ['-y', '-p', 'dsh-standards@1.6.6', 'dsh-standards', ...args], { encoding: 'utf8', timeout: 180000, maxBuffer: 16 * 1024 * 1024 })
 let audit = null
 try { audit = JSON.parse(run.stdout) } catch { /* handled below */ }
+
+// The `advice` action output: the checker's additive advice[] as one JSON line.
+// Written on the unparseable-report path too, so the composite step always has
+// a file to publish instead of an empty output.
+function writeAdvice(entries) {
+  const out = process.env.DSH_CHECK_ADVICE_OUT
+  if (!out) return
+  try {
+    fs.writeFileSync(out, JSON.stringify(entries) + '\n')
+  } catch (error) {
+    console.error(`dsh-check: cannot write DSH_CHECK_ADVICE_OUT: ${error.message}`)
+  }
+}
+
 if (!audit || !Array.isArray(audit.checks)) {
   const lines = ['<!-- dsh-plugin-check -->', '## DSH plugin check\n', `检查器没有产出可解析结果（exit ${run.status ?? 'null'}）。`]
   if (run.stderr) lines.push('\n```\n' + String(run.stderr).slice(-800) + '\n```')
+  writeAdvice([])
   console.log(lines.join('\n'))
   process.exit(0)
 }
@@ -56,6 +95,7 @@ const state = status === 'fail' || failedChecks.length > 0
   : status === 'pass' || status === 'warn' ? 'recognized' : 'not-run'
 const tag = (s) => ({ recognized: '已识别', failed: '未通过', incomplete: '不完整', 'not-run': '未运行' }[s] || s)
 const advice = Array.isArray(audit.advice) ? audit.advice : []
+writeAdvice(advice)
 
 // 1.2.0 joins each FAIL/WARN detail (C-x.y) to a rule and reports it as one
 // advice entry; `source` is the DSC check the detail belongs to. Anything that

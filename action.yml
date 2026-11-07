@@ -17,10 +17,17 @@ inputs:
     description: 'none (advisory, default) or entry (fail the job when ENTRY has a hard failure).'
     required: false
     default: 'none'
+  host-version:
+    description: 'Optional dsh version the host runs, used for the C-2 anchor. Forwarded as --host-version, or as --runtime-version when the pinned checker has no --host-version; ignored (with a log note) when the checker accepts neither.'
+    required: false
+    default: ''
 outputs:
   markdown:
     description: The rendered markdown report.
     value: ${{ steps.check.outputs.markdown }}
+  advice:
+    description: 'The checker advice[] entries as a JSON array; [] when the pinned checker does not emit advice.'
+    value: ${{ steps.check.outputs.advice }}
 runs:
   using: composite
   steps:
@@ -31,6 +38,8 @@ runs:
       shell: bash
       env:
         DSH_CHECK_FAIL_ON: ${{ inputs.fail-on }}
+        DSH_CHECK_HOST_VERSION: ${{ inputs.host-version }}
+        DSH_CHECK_ADVICE_OUT: ${{ runner.temp }}/dsh-check-advice.json
         # dsh-standards v1.6.6, pinned to the full commit.
         DSH_CHECKER_REF: 0fb3c5fde8509b9641d961cb2d0fe04c2e0f6fec
       run: |
@@ -43,6 +52,15 @@ runs:
           echo "markdown<<DSH_EOF"
           cat "$RUNNER_TEMP/dsh-check.md"
           echo "DSH_EOF"
+        } >> "$GITHUB_OUTPUT"
+        {
+          echo "advice<<DSH_ADVICE_EOF"
+          if [ -f "$DSH_CHECK_ADVICE_OUT" ]; then
+            cat "$DSH_CHECK_ADVICE_OUT"
+          else
+            echo "[]"
+          fi
+          echo "DSH_ADVICE_EOF"
         } >> "$GITHUB_OUTPUT"
         exit "$status"
     # Fork pull requests get a read-only token, so they only get the job summary.
