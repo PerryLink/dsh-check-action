@@ -79,3 +79,8 @@ moved tag cannot change the result, and the action runs on **Node 24**.
 
 The action itself is consumed at the annotated `v1` tag; pin a commit if you
 need a fully immutable reference.
+
+## Toolchain and upstream (facts, 2026-11)
+
+- This Action runs the pinned `dsh-standards` ENTRY checker in advisory mode by default.
+- Upstream: `dsh-plugin-hub` main includes a version-aware npm metadata check ([`4f3a560`](https://github.com/dshplugin/dsh-plugin-hub/commit/4f3a560), 2026-11-09); scope is install-time npm metadata only; it does not run ENTRY and is not an endorsement.
