@@ -49,11 +49,7 @@ jobs:
 
 Optional. It sets the dsh version used for the C-2 (`engines.dsh`) anchor.
 
-The pinned 1.6.8 checker has `--host-version`. The action probes the checker's `--help` and passes `--host-version` when present, so an older pin still works. This action
-forwarded verbatim, otherwise the value is forwarded as `--runtime-version`.
-If the checker accepts neither flag the input is ignored, a note is printed to
-the action log, and the checker's own host probe (or fallback anchor) applies.
-Unset by default, so behaviour is unchanged.
+The pinned 1.6.10 checker has `--host-version`. The action probes the checker's `--help` and forwards `--host-version` when present, otherwise `--runtime-version` (the same anchor under an older name). If the checker accepts neither flag the input is ignored, a note is printed to the action log, and the checker's own host probe (or fallback anchor) applies. Unset by default, so behaviour is unchanged.
 
 ## Outputs
 
@@ -73,8 +69,8 @@ Unset by default, so behaviour is unchanged.
 ## Pinning
 
 The checker is fetched from `PerryLink/dsh-standards` at a pinned commit
-(`DSH_CHECKER_REF` in `action.yml`): **v1.6.8 /
-`6c3d5253f2d624c980383622fc2aa7c5e55dbeae`**. The full commit is used so a
+(`DSH_CHECKER_REF` in `action.yml`): **v1.6.10 /
+`18af83daa4b0403552a473737550c08ef8efda10`**. The full commit is used so a
 moved tag cannot change the result, and the action runs on **Node 24**.
 
 The action itself is consumed at the annotated `v1` tag; pin a commit if you
