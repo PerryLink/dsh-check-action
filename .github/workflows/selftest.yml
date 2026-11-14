@@ -19,16 +19,16 @@ jobs:
           done
       - name: Assert the pinned checker and the action surface
         run: |
-          grep -q "e73b77f9a4dded696d71fc5c76d7fb070b18b1e2" action.yml
-          grep -q "e73b77f9a4dded696d71fc5c76d7fb070b18b1e2" src/check.mjs
-          grep -q "e73b77f9a4dded696d71fc5c76d7fb070b18b1e2" README.md
-          grep -q "dsh-standards@1.6.11" src/check.mjs
+          grep -q "711f69e6347ed90b24d8a15f288c429d9042039d" action.yml
+          grep -q "711f69e6347ed90b24d8a15f288c429d9042039d" src/check.mjs
+          grep -q "711f69e6347ed90b24d8a15f288c429d9042039d" README.md
+          grep -q "dsh-standards@1.6.12" src/check.mjs
           grep -q "host-version:" action.yml
           grep -q "advice:" action.yml
           grep -q "DSH_CHECK_ADVICE_OUT" action.yml
       - name: Run the checker on the fixture
         env:
-          DSH_CHECKER_REF: e73b77f9a4dded696d71fc5c76d7fb070b18b1e2
+          DSH_CHECKER_REF: 711f69e6347ed90b24d8a15f288c429d9042039d
         run: |
           set -o pipefail
           node src/check.mjs tests/fixture | tee /tmp/out.md
@@ -41,7 +41,7 @@ jobs:
           ! grep -q "DSC-01 清单/入口不完整" /tmp/out.md
       - name: Assert the advice is rendered
         env:
-          DSH_CHECKER_REF: e73b77f9a4dded696d71fc5c76d7fb070b18b1e2
+          DSH_CHECKER_REF: 711f69e6347ed90b24d8a15f288c429d9042039d
         run: |
           node src/check.mjs tests/fixture-warn | tee /tmp/out-warn.md
           grep -q "DSC-11" /tmp/out-warn.md
@@ -49,12 +49,30 @@ jobs:
           grep -q "https://github.com/PerryLink/dsh-plugin-guide/blob/" /tmp/out-warn.md
       - name: Assert the advice JSON output
         env:
-          DSH_CHECKER_REF: e73b77f9a4dded696d71fc5c76d7fb070b18b1e2
+          DSH_CHECKER_REF: 711f69e6347ed90b24d8a15f288c429d9042039d
           DSH_CHECK_ADVICE_OUT: /tmp/advice.json
         run: |
           node src/check.mjs tests/fixture-warn > /tmp/advice.md
           node -e "const a = JSON.parse(require('fs').readFileSync('/tmp/advice.json', 'utf8')); if (!Array.isArray(a) || a.length === 0) throw new Error('advice output is empty'); for (const x of a) if (!x.source || !x.fix || !x.docsUrl) throw new Error('advice entry is missing source/fix/docsUrl'); console.log('advice entries:', a.length)"
           grep -q "修复：" /tmp/advice.md
+      - name: Reserved capability ids are accepted but not judged
+        env:
+          DSH_CHECKER_REF: 711f69e6347ed90b24d8a15f288c429d9042039d
+          DSH_CHECK_ADVICE_OUT: /tmp/reserved-advice.json
+        run: |
+          node src/check.mjs tests/fixture-reserved | tee /tmp/reserved.md
+          # Reserved ids are accepted (not an unknown-id FAIL) and not judged
+          # (not an over-declaration WARN), so the action renders no finding.
+          grep -q "没有需要改的项" /tmp/reserved.md
+          ! grep -q "DSC-11" /tmp/reserved.md
+          ! grep -q "修复：" /tmp/reserved.md
+          node -e "const a = JSON.parse(require('fs').readFileSync('/tmp/reserved-advice.json', 'utf8')); if (!Array.isArray(a) || a.length !== 0) throw new Error('reserved capability ids must not produce advice: ' + JSON.stringify(a)); console.log('reserved advice entries:', a.length)"
+          # The same surface from the checker's own report (cached by the fixture
+          # step above): C-11.1 does not reject the ids, C-11.5 reports them as NA.
+          checker="$RUNNER_TEMP/dsh-standards-$DSH_CHECKER_REF/40-checker/bin/dsh-plugin-verify.mjs"
+          test -f "$checker"
+          node "$checker" tests/fixture-reserved --scope entry --entry-claim static --format json > /tmp/reserved.json
+          node -e "const r = JSON.parse(require('fs').readFileSync('/tmp/reserved.json', 'utf8')); const c = r.checks.find((x) => x.id === 'DSC-11'); if (!c) throw new Error('DSC-11 missing from the checker report'); const rows = c.details.filter((d) => d.item === 'C-11.5' && d.result === 'NA' && /reserved capability/.test(d.reason)); if (rows.length !== 2) throw new Error('expected 2 reserved-capability NA rows, got ' + rows.length); if (c.details.some((d) => d.item === 'C-11.1' && d.result === 'FAIL')) throw new Error('a reserved capability id was rejected by C-11.1'); if (c.result === 'FAIL' || c.result === 'WARN') throw new Error('DSC-11 must stay NA for reserved-only capabilities, got ' + c.result); console.log('reserved NA rows:', rows.length, 'DSC-11:', c.result)"
       - name: Forward host-version to the checker anchor
         env:
           DSH_CHECK_HOST_VERSION: 9.9.9

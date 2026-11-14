@@ -58,7 +58,7 @@ not catch it. Set `host-version` (or the `DSH_HOST_VERSION` environment
 variable) when you want compatibility judged; for the current line use
 `0.2.2-rc.3` (npm `next`; `latest` is still `0.2.2-rc.1`).
 
-The pinned 1.6.11 checker has `--host-version`. The action probes the checker's `--help` and forwards `--host-version` when present, otherwise `--runtime-version` (the same anchor under an older name). If the checker accepts neither flag the input is ignored, a note is printed to the action log, and the checker's own host probe (or fallback anchor) applies.
+The pinned 1.6.12 checker has `--host-version`. The action probes the checker's `--help` and forwards `--host-version` when present, otherwise `--runtime-version` (the same anchor under an older name). If the checker accepts neither flag the input is ignored, a note is printed to the action log, and the checker's own host probe (or fallback anchor) applies.
 
 ## Outputs
 
@@ -80,9 +80,15 @@ The pinned 1.6.11 checker has `--host-version`. The action probes the checker's 
 ## Pinning
 
 The checker is fetched from `PerryLink/dsh-standards` at a pinned commit
-(`DSH_CHECKER_REF` in `action.yml`): **v1.6.11 /
-`e73b77f9a4dded696d71fc5c76d7fb070b18b1e2`**. The full commit is used so a
+(`DSH_CHECKER_REF` in `action.yml`): **v1.6.12 /
+`711f69e6347ed90b24d8a15f288c429d9042039d`**. The full commit is used so a
 moved tag cannot change the result, and the action runs on **Node 24**.
+
+1.6.12 adds the reserved capability ids for the rc3 host seams
+(`computer:control`, `mcp:manage`, `session-log:egress`, …): declaring one is
+accepted (never an unknown-id failure) and reported as not-run, not as an
+over-declaration WARN. The selftest pins that surface, so a regression in the
+checker or a downgrade of this pin fails the workflow.
 
 The action itself is consumed at the annotated `v1` tag; pin a commit if you
 need a fully immutable reference.

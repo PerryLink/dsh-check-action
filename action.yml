@@ -40,8 +40,8 @@ runs:
         DSH_CHECK_FAIL_ON: ${{ inputs.fail-on }}
         DSH_CHECK_HOST_VERSION: ${{ inputs.host-version }}
         DSH_CHECK_ADVICE_OUT: ${{ runner.temp }}/dsh-check-advice.json
-        # dsh-standards v1.6.11, pinned to the full commit.
-        DSH_CHECKER_REF: e73b77f9a4dded696d71fc5c76d7fb070b18b1e2
+        # dsh-standards v1.6.12, pinned to the full commit.
+        DSH_CHECKER_REF: 711f69e6347ed90b24d8a15f288c429d9042039d
       run: |
         status=0
         node "${{ github.action_path }}/src/check.mjs" "${{ inputs.path }}" > "$RUNNER_TEMP/dsh-check.md" || status=$?

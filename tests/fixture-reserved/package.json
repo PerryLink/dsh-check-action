@@ -1,0 +1,13 @@
+{
+  "name": "@dsh-fixtures/action-reserved",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "engines": { "dsh": ">=0.2.2-0 <0.3.0" },
+  "dsh": {
+    "manifestVersion": 1,
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "capabilities": ["computer:control", "session-log:egress"],
+    "labels": []
+  }
+}
