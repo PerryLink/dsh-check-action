@@ -19,16 +19,16 @@ jobs:
           done
       - name: Assert the pinned checker and the action surface
         run: |
-          grep -q "18af83daa4b0403552a473737550c08ef8efda10" action.yml
-          grep -q "18af83daa4b0403552a473737550c08ef8efda10" src/check.mjs
-          grep -q "18af83daa4b0403552a473737550c08ef8efda10" README.md
-          grep -q "dsh-standards@1.6.10" src/check.mjs
+          grep -q "e73b77f9a4dded696d71fc5c76d7fb070b18b1e2" action.yml
+          grep -q "e73b77f9a4dded696d71fc5c76d7fb070b18b1e2" src/check.mjs
+          grep -q "e73b77f9a4dded696d71fc5c76d7fb070b18b1e2" README.md
+          grep -q "dsh-standards@1.6.11" src/check.mjs
           grep -q "host-version:" action.yml
           grep -q "advice:" action.yml
           grep -q "DSH_CHECK_ADVICE_OUT" action.yml
       - name: Run the checker on the fixture
         env:
-          DSH_CHECKER_REF: 18af83daa4b0403552a473737550c08ef8efda10
+          DSH_CHECKER_REF: e73b77f9a4dded696d71fc5c76d7fb070b18b1e2
         run: |
           set -o pipefail
           node src/check.mjs tests/fixture | tee /tmp/out.md
@@ -41,7 +41,7 @@ jobs:
           ! grep -q "DSC-01 清单/入口不完整" /tmp/out.md
       - name: Assert the advice is rendered
         env:
-          DSH_CHECKER_REF: 18af83daa4b0403552a473737550c08ef8efda10
+          DSH_CHECKER_REF: e73b77f9a4dded696d71fc5c76d7fb070b18b1e2
         run: |
           node src/check.mjs tests/fixture-warn | tee /tmp/out-warn.md
           grep -q "DSC-11" /tmp/out-warn.md
@@ -49,7 +49,7 @@ jobs:
           grep -q "https://github.com/PerryLink/dsh-plugin-guide/blob/" /tmp/out-warn.md
       - name: Assert the advice JSON output
         env:
-          DSH_CHECKER_REF: 18af83daa4b0403552a473737550c08ef8efda10
+          DSH_CHECKER_REF: e73b77f9a4dded696d71fc5c76d7fb070b18b1e2
           DSH_CHECK_ADVICE_OUT: /tmp/advice.json
         run: |
           node src/check.mjs tests/fixture-warn > /tmp/advice.md
