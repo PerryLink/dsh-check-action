@@ -18,7 +18,7 @@ inputs:
     required: false
     default: 'none'
   host-version:
-    description: 'Optional dsh version the host runs, used for the C-2 anchor. Forwarded as --host-version, or as --runtime-version when the pinned checker has no --host-version; ignored (with a log note) when the checker accepts neither.'
+    description: 'Optional dsh version the host runs, used for the C-2 anchor (for the current line use 0.2.2-rc.3). When empty, C-2 is NA (compatibility not judged), not a pass. Forwarded as --host-version, or as --runtime-version when the pinned checker has no --host-version; ignored (with a log note) when the checker accepts neither.'
     required: false
     default: ''
 outputs:
@@ -40,8 +40,8 @@ runs:
         DSH_CHECK_FAIL_ON: ${{ inputs.fail-on }}
         DSH_CHECK_HOST_VERSION: ${{ inputs.host-version }}
         DSH_CHECK_ADVICE_OUT: ${{ runner.temp }}/dsh-check-advice.json
-        # dsh-standards v1.6.10, pinned to the full commit.
-        DSH_CHECKER_REF: 18af83daa4b0403552a473737550c08ef8efda10
+        # dsh-standards v1.6.11, pinned to the full commit.
+        DSH_CHECKER_REF: e73b77f9a4dded696d71fc5c76d7fb070b18b1e2
       run: |
         status=0
         node "${{ github.action_path }}/src/check.mjs" "${{ inputs.path }}" > "$RUNNER_TEMP/dsh-check.md" || status=$?

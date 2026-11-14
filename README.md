@@ -20,7 +20,7 @@ jobs:
           path: .
           comment: true
           fail-on: none   # advisory by default
-          # host-version: 0.2.2-rc.1
+          # host-version: 0.2.2-rc.3
 ```
 
 ## What it does
@@ -43,13 +43,22 @@ jobs:
 | `path` | `.` | Path to the plugin package inside the repository. |
 | `comment` | `true` | Post or update a sticky pull-request comment (same-repo PRs only). |
 | `fail-on` | `none` | `none` keeps the run advisory; `entry` fails the job on a hard ENTRY failure. |
-| `host-version` | `''` | Optional dsh version the host runs, used for the C-2 anchor. |
+| `host-version` | `''` | Optional dsh version the host runs, used for the C-2 anchor. Unset ⇒ C-2 is NA, not a pass. |
 
 ### `host-version`
 
 Optional. It sets the dsh version used for the C-2 (`engines.dsh`) anchor.
 
-The pinned 1.6.10 checker has `--host-version`. The action probes the checker's `--help` and forwards `--host-version` when present, otherwise `--runtime-version` (the same anchor under an older name). If the checker accepts neither flag the input is ignored, a note is printed to the action log, and the checker's own host probe (or fallback anchor) applies. Unset by default, so behaviour is unchanged.
+**Unset means C-2 is not judged — that is NA, not a pass.** The action does not
+install a host, and a GitHub-hosted runner normally has no `dsh` on PATH, so the
+checker's best-effort `dsh --version` probe finds nothing and records `DSC-02`
+as `NA` (compatibility not judged). A wrong `engines.dsh` range therefore does
+**not** fail the run under the default configuration, and `fail-on: entry` does
+not catch it. Set `host-version` (or the `DSH_HOST_VERSION` environment
+variable) when you want compatibility judged; for the current line use
+`0.2.2-rc.3` (npm `next`; `latest` is still `0.2.2-rc.1`).
+
+The pinned 1.6.11 checker has `--host-version`. The action probes the checker's `--help` and forwards `--host-version` when present, otherwise `--runtime-version` (the same anchor under an older name). If the checker accepts neither flag the input is ignored, a note is printed to the action log, and the checker's own host probe (or fallback anchor) applies.
 
 ## Outputs
 
@@ -61,6 +70,8 @@ The pinned 1.6.10 checker has `--host-version`. The action probes the checker's 
 ## What it does not do
 
 - It does **not** install or execute your plugin. ENTRY only.
+- It does **not** judge `engines.dsh` compatibility unless you pass `host-version`:
+  with no host version the C-2 anchor is unknown and `DSC-02` is `NA`, not a pass.
 - It does **not** run FLOW (journeys) or BOOST (evidence cards); those stay `not-run`.
 - It is **not** official, not a certification, and does not rank anything.
 - The report is **advisory**: WARN does not fail, and `fail-on: none` (the default)
@@ -69,8 +80,8 @@ The pinned 1.6.10 checker has `--host-version`. The action probes the checker's 
 ## Pinning
 
 The checker is fetched from `PerryLink/dsh-standards` at a pinned commit
-(`DSH_CHECKER_REF` in `action.yml`): **v1.6.10 /
-`18af83daa4b0403552a473737550c08ef8efda10`**. The full commit is used so a
+(`DSH_CHECKER_REF` in `action.yml`): **v1.6.11 /
+`e73b77f9a4dded696d71fc5c76d7fb070b18b1e2`**. The full commit is used so a
 moved tag cannot change the result, and the action runs on **Node 24**.
 
 The action itself is consumed at the annotated `v1` tag; pin a commit if you

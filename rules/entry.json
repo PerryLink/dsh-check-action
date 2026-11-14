@@ -19,7 +19,7 @@
       "没有 engines 时，用 peerDependencies[\"@deepseek-ai/dsh\"] 兜底",
       "两者都有时以 engines 为准，peer 与 engines 冲突会被忽略"
     ],
-    "example": "\"engines\": { \"dsh\": \">=0.2.0 <0.3.0\" }",
+    "example": "\"engines\": { \"dsh\": \">=0.2.2-0 <0.3.0\" }",
     "anchor": "docs/entry.md#author-checklist",
     "when": "submit"
   },
