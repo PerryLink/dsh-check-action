@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="660" viewBox="0 0 1100 660" role="img" aria-label="dsh-check-action structure diagram">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0.3" y2="1"><stop offset="0" stop-color="#f9f6fd"/><stop offset="1" stop-color="#e4eaf8"/></linearGradient>
+<filter id="soft" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#16122c" flood-opacity="0.10"/></filter>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#4B67B4"/></marker>
+</defs>
+<rect width="1100" height="660" fill="url(#bg)"/>
+<text x="44" y="58" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="28" font-weight="700">dsh-check-action</text>
+<text x="44" y="88" fill="#4d5261" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="15">checkout → dsh-check-action → dsh-standards 1.6.12 ENTRY → report → summary + sticky comment</text>
+<rect x="876.34375" y="36" width="179.65625" height="26" rx="13.0" fill="#f5f2fb"/>
+<text x="888.34375" y="53.08" fill="#4B67B4" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="12" font-weight="700">pinned commit · Node 24</text>
+<rect x="44" y="120" width="214" height="250" rx="18" fill="#ffffff" stroke="#e6e2ef" stroke-width="1.5" filter="url(#soft)"/>
+<text x="62" y="146" fill="#8f94a4" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="12" font-weight="700">01</text>
+<text x="62" y="172" fill="#141419" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="16.5" font-weight="700">Checkout</text>
+<text x="62" y="196" fill="#4d5261" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="11.5">caller workflow</text>
+<rect x="62" y="209" width="178" height="26" rx="8" fill="#f5f2fb"/>
+<text x="72" y="227" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5">actions/checkout@v4</text>
+<rect x="62" y="241" width="178" height="26" rx="8" fill="#f5f2fb"/>
+<text x="72" y="259" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5">path: .</text>
+<rect x="62" y="273" width="178" height="26" rx="8" fill="#f5f2fb"/>
+<text x="72" y="291" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5">comment: true</text>
+<line x1="260" y1="245.0" x2="276" y2="245.0" stroke="#4B67B4" stroke-width="1.8" marker-end="url(#arr)"/>
+<rect x="278" y="120" width="214" height="250" rx="18" fill="#ffffff" stroke="#e6e2ef" stroke-width="1.5" filter="url(#soft)"/>
+<text x="296" y="146" fill="#8f94a4" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="12" font-weight="700">02</text>
+<text x="296" y="172" fill="#141419" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="16.5" font-weight="700">Check</text>
+<text x="296" y="196" fill="#4d5261" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="11.5">read-only ENTRY</text>
+<rect x="296" y="209" width="178" height="26" rx="8" fill="#f5f2fb"/>
+<text x="306" y="227" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5">--scope entry</text>
+<rect x="296" y="241" width="178" height="26" rx="8" fill="#f5f2fb"/>
+<text x="306" y="259" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5">--entry-claim static</text>
+<rect x="296" y="273" width="178" height="26" rx="8" fill="#f5f2fb"/>
+<text x="306" y="291" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5">--format json</text>
+<line x1="494" y1="245.0" x2="510" y2="245.0" stroke="#4B67B4" stroke-width="1.8" marker-end="url(#arr)"/>
+<rect x="512" y="120" width="214" height="250" rx="18" fill="#ffffff" stroke="#e6e2ef" stroke-width="1.5" filter="url(#soft)"/>
+<text x="530" y="146" fill="#8f94a4" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="12" font-weight="700">03</text>
+<text x="530" y="172" fill="#141419" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="16.5" font-weight="700">Report</text>
+<text x="530" y="196" fill="#4d5261" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="11.5">summary + comment</text>
+<rect x="530" y="209" width="178" height="26" rx="8" fill="#f5f2fb"/>
+<text x="540" y="227" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5">$GITHUB_STEP_SUMMARY</text>
+<rect x="530" y="241" width="178" height="26" rx="8" fill="#f5f2fb"/>
+<text x="540" y="259" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5">markdown · advice</text>
+<rect x="530" y="273" width="178" height="26" rx="8" fill="#f5f2fb"/>
+<text x="540" y="291" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5">sticky comment</text>
+<rect x="752" y="120" width="304" height="148" rx="18" fill="#ffffff" stroke="#e6e2ef" stroke-width="1.5" filter="url(#soft)"/>
+<text x="772" y="148" fill="#4B67B4" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="14.5" font-weight="700">checks[]</text>
+<rect x="964.0625" y="130" width="76.921875" height="18" rx="9.0" fill="#f5f2fb"/>
+<text x="973.0625" y="142.57" fill="#4B67B4" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="10.5">entry scope</text>
+<text x="772" y="176" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5">ENTRY: recognized</text>
+<text x="772" y="198" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5">FLOW: not-run</text>
+<text x="772" y="220" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5">BOOST: not-run</text>
+<rect x="752" y="288" width="304" height="122" rx="18" fill="#ffffff" stroke="#e6e2ef" stroke-width="1.5" filter="url(#soft)"/>
+<text x="772" y="316" fill="#4d5261" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="14.5" font-weight="700">advice[]</text>
+<rect x="967.0625" y="298" width="73.609375" height="18" rx="9.0" fill="#f5f2fb"/>
+<text x="976.0625" y="310.57" fill="#4d5261" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="10.5">JSON array</text>
+<text x="772" y="344" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5">source · fix · docsUrl</text>
+<text x="772" y="366" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5">[] for an old checker</text>
+<text x="772" y="388" fill="#141419" font-family="'Consolas','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5">rules/entry.json card</text>
+<rect x="752" y="430" width="304" height="82" rx="18" fill="#ffffff" stroke="#4B67B4" stroke-width="1.6" filter="url(#soft)"/>
+<text x="772" y="458" fill="#141419" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="13.5" font-weight="700">reviewer</text>
+<text x="772" y="482" fill="#4d5261" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="11.5">WARN never blocks by default</text>
+<text x="772" y="502" fill="#8f94a4" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="10.5">fail-on: entry is opt-in</text>
+<path d="M730 245.0 H742" fill="none" stroke="#4B67B4" stroke-width="1.6" stroke-linecap="round"/>
+<path d="M742 210 V471" fill="none" stroke="#4B67B4" stroke-width="1.6" stroke-linecap="round"/>
+<line x1="742" y1="194" x2="750" y2="194" stroke="#4B67B4" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="742" y1="349" x2="750" y2="349" stroke="#4B67B4" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="742" y1="471" x2="750" y2="471" stroke="#4B67B4" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="44" y1="420" x2="714" y2="420" stroke="#dcd8ea" stroke-width="1"/>
+<text x="44" y="444" fill="#8f94a4" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="11">The action never installs or executes the plugin; ENTRY is static, FLOW and BOOST stay not-run.</text>
+<text x="44" y="464" fill="#8f94a4" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="11">Checker pinned to dsh-standards v1.6.12 (commit 711f69e…) so a moved tag cannot change the result.</text>
+<line x1="44" y1="564" x2="1056" y2="564" stroke="#dcd8ea" stroke-width="1"/>
+<text x="44" y="588" fill="#4d5261" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="11.5">inputs: path (.) · comment (true) · fail-on (none|entry) · host-version (&#x27;&#x27; ⇒ C-2 NA, not a pass)</text>
+<text x="44" y="610" fill="#8f94a4" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif" font-size="11.5">runner: node 24 · permissions: contents: read · pull-requests: write · no model calls</text>
+</svg>

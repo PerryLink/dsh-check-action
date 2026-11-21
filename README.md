@@ -1,7 +1,25 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-check-action-hero-en-dark.webp">
+  <img src="docs/assets/dsh-check-action-hero-en-light.webp" width="100%" alt="dsh-check-action: read-only ENTRY checks for a DSH plugin — the pinned dsh-standards 1.6.12 checker reports ENTRY recognized on tests/fixture-warn, then two WARN findings (C-11.1 dsh.capabilities absent, C-13.2 trigger labels not mapped), each with a fix and a docs link; the outputs are the markdown report and the advice JSON array">
+</picture>
+
 # dsh-check-action
 
-Read-only **ENTRY** checks for a DSH plugin, with deterministic suggestions.
-No model calls, so a run costs no tokens — only GitHub Actions minutes.
+**Read-only ENTRY checks for a DSH plugin, with deterministic suggestions — no model calls, so a run costs no tokens.**
+
+*One composite action around the pinned `dsh-standards` checker: run ENTRY statically, render its `advice[]` into a markdown report, write it to the job summary and keep one sticky comment on same-repo PRs. Fork PRs get the summary only.*
+
+English · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
+
+[![GitHub Action](https://img.shields.io/badge/GitHub%20Action-v1-2f81f7.svg)](action.yml)
+[![Node](https://img.shields.io/badge/node-24-brightgreen.svg)]()
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/PerryLink/dsh-standards/blob/main/LICENSE)
+
+</div>
+
+---
 
 ```yaml
 name: DSH check
@@ -36,6 +54,14 @@ jobs:
    comment. **Fork pull requests get the job summary only**: the token there is
    read-only, so the comment step is skipped instead of failing.
 
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-check-action-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-check-action-flow-v5-light.svg" width="100%" alt="dsh-check-action structure: the caller workflow checks out the repository, the action runs the pinned dsh-standards 1.6.12 checker read-only with --scope entry, --entry-claim static and --format json, then publishes the markdown report to the job summary and the outputs and keeps one sticky comment on same-repo pull requests; fork PRs get the summary only">
+</picture>
+
+*Structure: checkout → check → publish; the checker is read-only and static ENTRY, so FLOW and BOOST stay `not-run`. The token labels inside the diagram are the real action inputs, checker flags and output names, so the same picture serves all five languages.*
+
 ## Inputs
 
 | input | default | meaning |
@@ -61,6 +87,11 @@ variable) when you want compatibility judged; for the current line use
 The pinned 1.6.12 checker has `--host-version`. The action probes the checker's `--help` and forwards `--host-version` when present, otherwise `--runtime-version` (the same anchor under an older name). If the checker accepts neither flag the input is ignored, a note is printed to the action log, and the checker's own host probe (or fallback anchor) applies.
 
 ## Outputs
+
+![dsh-check-action real run: tests/fixture reports nothing to change, tests/fixture-warn yields two WARN findings C-11.1 and C-13.2 with their fixes, and tests/fixture-reserved accepts the reserved capability ids with nothing to change](docs/assets/dsh-check-action-demo.gif)
+
+*Animated: real `node src/check.mjs` stdout on 2026-11-21 (checker dsh-standards 1.6.12 — the version pinned in `action.yml`), run against the repository's three fixtures: clean, WARN and reserved capability ids. The report text is rendered by the checker's Chinese templates and is not rewritten.*
+
 
 | output | meaning |
 |---|---|
